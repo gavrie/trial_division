@@ -1,0 +1,18 @@
+[package]
+name = "primes"
+version = "0.1.0"
+authors = ["Gavrie Philipson <gavrie@redislabs.com>"]
+edition = "2018"
+
+[lib]
+name = "primes"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = "0.7.0"
+
+[target.x86_64-apple-darwin]
+rustflags = [
+  "-C", "link-arg=-undefined",
+  "-C", "link-arg=dynamic_lookup",
+]
