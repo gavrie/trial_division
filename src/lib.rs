@@ -17,20 +17,20 @@ fn trial_division(mut n: u64) -> Vec<u64> {
 }
 
 
-#[pyfunction]
-fn calculate(i: u64, n0: u64, n1: u64) -> PyResult<()> {
-    for n in n0..n1 {
-        let a = trial_division(n);
-        println!("Thread {}: {:?}", i, a);
-    }
-
-    Ok(())
-}
-
-
 #[pymodule]
 fn primes(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_wrapped(wrap_pyfunction!(calculate))?;
+
+    #[pyfn(m, "calculate")]
+    fn calculate(py: Python, i: u64, n0: u64, n1: u64) -> PyResult<()> {
+        py.allow_threads(|| {
+            for n in n0..n1 {
+                let a = trial_division(n);
+                println!("Thread {}: {:?}", i, a);
+            }
+        });
+
+        Ok(())
+    }
 
     Ok(())
 }
